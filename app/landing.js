@@ -74,17 +74,19 @@ export default function Landing({
         .forEach((input) => (input.value = localeLang));
     };
 
-    // --- Geo detection fallback (dev/localhost has no server geo headers).
-    // Resolved before the phone library initializes so the phone widget also
-    // defaults to the visitor's country.---
+    // --- Geo detection fallback. The server may resolve a country without
+    // a translated language (e.g. PK -> English), or no country at all
+    // (localhost has no geo headers). Re-check client-side and translate
+    // whenever the browser's actual country is a translated one and differs
+    // from the server's resolution. Resolved before the phone library
+    // initializes so the phone widget also follows.---
     const geoReady = (async () => {
-      if (country !== "GB") return; // server already detected (or overridden)
       if (/[?&](country|lang)=/.test(window.location.search)) return;
       try {
         const res = await fetch("https://ipwho.is/");
         const data = await res.json();
         const cc = String(data?.country_code || "").toUpperCase();
-        if (cc.length === 2 && LANG_BY_COUNTRY[cc] && cc !== "GB") {
+        if (cc.length === 2 && LANG_BY_COUNTRY[cc] && cc !== country) {
           applyDomTranslation(
             normalizeDictForBrand(translationFor(cc)),
             cc,
@@ -93,7 +95,7 @@ export default function Landing({
           document.documentElement.lang = langForCountry(cc);
         }
       } catch {
-        /* offline — keep the English default */
+        /* offline — keep the server-rendered language */
       }
     })();
 
