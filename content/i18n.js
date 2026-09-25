@@ -1019,55 +1019,19 @@ export const META_DESCRIPTION = {
     `${brand} は24時間365日、暗号通貨取引を自動化します：1日最大120件の取引、その90%は3日以内に完了。無料で登録して、あとは ${brand} のアルゴリズムにお任せください。`,
 };
 
-// Testimonial portrait photos per non-English locale. Free-to-use AI
-// headshots from randomuser.me (no real-person rights or copyright issues);
-// swap any URL for a different face by changing the index. English-language
-// countries keep the original bundled photos.
-export const TESTIMONIAL_AVATARS = {
-  de: [
-    "https://randomuser.me/api/portraits/men/32.jpg",
-    "https://randomuser.me/api/portraits/men/45.jpg",
-    "https://randomuser.me/api/portraits/men/67.jpg",
-  ],
-  fr: [
-    "https://randomuser.me/api/portraits/men/75.jpg",
-    "https://randomuser.me/api/portraits/men/12.jpg",
-    "https://randomuser.me/api/portraits/men/88.jpg",
-  ],
-  nl: [
-    "https://randomuser.me/api/portraits/men/49.jpg",
-    "https://randomuser.me/api/portraits/men/21.jpg",
-    "https://randomuser.me/api/portraits/men/93.jpg",
-  ],
-  sv: [
-    "https://randomuser.me/api/portraits/men/58.jpg",
-    "https://randomuser.me/api/portraits/men/70.jpg",
-    "https://randomuser.me/api/portraits/men/36.jpg",
-  ],
-  no: [
-    "https://randomuser.me/api/portraits/men/64.jpg",
-    "https://randomuser.me/api/portraits/men/11.jpg",
-    "https://randomuser.me/api/portraits/men/77.jpg",
-  ],
-  da: [
-    "https://randomuser.me/api/portraits/men/85.jpg",
-    "https://randomuser.me/api/portraits/men/29.jpg",
-    "https://randomuser.me/api/portraits/men/53.jpg",
-  ],
-  fi: [
-    "https://randomuser.me/api/portraits/men/41.jpg",
-    "https://randomuser.me/api/portraits/men/60.jpg",
-    "https://randomuser.me/api/portraits/men/17.jpg",
-  ],
-  ja: [
-    "https://randomuser.me/api/portraits/men/2.jpg",
-    "https://randomuser.me/api/portraits/men/6.jpg",
-    "https://randomuser.me/api/portraits/men/9.jpg",
-  ],
-};
+// Testimonial portrait photos, matched to the testimonial ages:
+// [0] ~69 senior, [1] ~47 middle-aged, [2] ~55 middle-aged — all in suits,
+// rich-and-distinguished look. Free under the Pexels License.
+// English-language countries keep the original bundled photos.
+const AVATAR_PARAMS = "?auto=compress&cs=tinysrgb&fit=crop&w=160&h=160";
+const AGE_AVATARS = [
+  "https://images.pexels.com/photos/37272896/pexels-photo-37272896.png" + AVATAR_PARAMS, // senior gentleman in a suit, by Layth Mushreq
+  "https://images.pexels.com/photos/37148307/pexels-photo-37148307.jpeg" + AVATAR_PARAMS, // businessman in blue suit, by Vincent Santamaria
+  "https://images.pexels.com/photos/33290973/pexels-photo-33290973.jpeg" + AVATAR_PARAMS, // confident man in dark suit, by Mohamed Abdelghaffar
+];
 
 export function testimonialAvatars(lang) {
-  return TESTIMONIAL_AVATARS[lang] || null;
+  return lang === "en" ? null : AGE_AVATARS;
 }
 
 // Thank-you page copy per language.
