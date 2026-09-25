@@ -6,6 +6,8 @@ import {
   langForCountry,
   PLACEHOLDERS,
   LANG_BY_COUNTRY,
+  TITLE_SUFFIX,
+  META_DESCRIPTION,
 } from "../content/i18n";
 
 export default function Landing({
@@ -72,6 +74,21 @@ export default function Landing({
       root
         .querySelectorAll('input[name="lang"]')
         .forEach((input) => (input.value = localeLang));
+
+      // Keep the <head> in sync: title and meta descriptions follow the
+      // language that just got applied to the page.
+      document.documentElement.lang = localeLang;
+      document.title = `${brand}™ | ${TITLE_SUFFIX[localeLang] || TITLE_SUFFIX.en}`;
+      const description = (META_DESCRIPTION[localeLang] || META_DESCRIPTION.en)(brand);
+      const setMeta = (selector, attribute, value) => {
+        const el = document.querySelector(selector);
+        if (el && value) el.setAttribute(attribute, value);
+      };
+      setMeta('meta[name="description"]', "content", description);
+      setMeta('meta[property="og:title"]', "content", document.title);
+      setMeta('meta[property="og:description"]', "content", description);
+      setMeta('meta[name="twitter:title"]', "content", document.title);
+      setMeta('meta[name="twitter:description"]', "content", description);
     };
 
     // --- Geo detection fallback. The server may resolve a country without
@@ -92,7 +109,6 @@ export default function Landing({
             cc,
             langForCountry(cc)
           );
-          document.documentElement.lang = langForCountry(cc);
         }
       } catch {
         /* offline — keep the server-rendered language */

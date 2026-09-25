@@ -35,7 +35,12 @@ export default function Thanks({ lang: serverLang, country: serverCountry }) {
   }, [serverCountry, state.lang]);
 
   useEffect(() => {
+    // Keep the <head> in sync with the language applied to the page.
     document.documentElement.lang = state.lang;
+    const t = THANKS[state.lang] || THANKS.en;
+    document.title = t.title;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", t.body);
   }, [state.lang]);
 
   const t = THANKS[state.lang] || THANKS.en;
