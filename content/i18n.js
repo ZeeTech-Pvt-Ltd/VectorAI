@@ -1019,19 +1019,27 @@ export const META_DESCRIPTION = {
     `${brand} は24時間365日、暗号通貨取引を自動化します：1日最大120件の取引、その90%は3日以内に完了。無料で登録して、あとは ${brand} のアルゴリズムにお任せください。`,
 };
 
-// Testimonial portrait photos, matched to the testimonial ages:
-// [0] ~69 senior, [1] ~47 middle-aged, [2] ~55 middle-aged — all in suits,
-// rich-and-distinguished look. Free under the Pexels License.
+// Testimonial portrait photos per country: [0] ~69 senior, [1] ~47
+// middle-aged, [2] ~55 middle-aged — suited, rich-and-distinguished look.
+// All free under the Pexels License; swap any URL to change a face.
 // English-language countries keep the original bundled photos.
-const AVATAR_PARAMS = "?auto=compress&cs=tinysrgb&fit=crop&w=160&h=160";
-const AGE_AVATARS = [
-  "https://images.pexels.com/photos/37272896/pexels-photo-37272896.png" + AVATAR_PARAMS, // senior gentleman in a suit, by Layth Mushreq
-  "https://images.pexels.com/photos/37148307/pexels-photo-37148307.jpeg" + AVATAR_PARAMS, // businessman in blue suit, by Vincent Santamaria
-  "https://images.pexels.com/photos/33290973/pexels-photo-33290973.jpeg" + AVATAR_PARAMS, // confident man in dark suit, by Mohamed Abdelghaffar
-];
+const P = "?auto=compress&cs=tinysrgb&fit=crop&w=160&h=160";
+const px = (id, ext = "jpeg") =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.${ext}` + P;
+
+const TESTIMONIAL_AVATARS = {
+  de: [px(37272896, "png"), px(37148307), px(33393733)],
+  fr: [px(37272895, "png"), px(37148299), px(28441027)],
+  nl: [px(37688041), px(33290973), px(18642680)],
+  sv: [px(37272896, "png"), px(33393733), px(37148299)],
+  no: [px(37272895, "png"), px(28441027), px(33290973)],
+  da: [px(37688041), px(18642680), px(37148307)],
+  fi: [px(37272896, "png"), px(37148299), px(33393733)],
+  ja: [px(30975982), px(33261958), px(20567658)],
+};
 
 export function testimonialAvatars(lang) {
-  return lang === "en" ? null : AGE_AVATARS;
+  return TESTIMONIAL_AVATARS[lang] || null;
 }
 
 // Thank-you page copy per language.
