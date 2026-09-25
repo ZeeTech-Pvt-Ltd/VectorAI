@@ -7,6 +7,7 @@ import {
   PLACEHOLDERS,
   TITLE_SUFFIX,
   META_DESCRIPTION,
+  testimonialInitials,
 } from "../content/i18n";
 
 const DEFAULT_KEYWORD = "Vector Ai";
@@ -169,6 +170,21 @@ function translateHtml(html, dict, lang, cc) {
   out = out
     .split('name="lang" value="en"')
     .join(`name="lang" value="${lang}"`);
+  // Testimonial photos -> localized initials avatars on non-English pages.
+  if (lang !== "en") {
+    const initials = testimonialInitials(lang);
+    if (initials) {
+      [
+        '<img src="/assets/img/ava-1.webp" alt="" srcset="/assets/img/ava-1-2x.webp 2x">',
+        '<img src="/assets/img/ava-2.webp" alt="" srcset="/assets/img/ava-2-2x.webp 2x">',
+        '<img src="/assets/img/ava-3.webp" alt="" srcset="/assets/img/ava-3-2x.webp 2x">',
+      ].forEach((imgTag, i) => {
+        out = out
+          .split(imgTag)
+          .join(`<span class="ava">${escapeHtml(initials[i])}</span>`);
+      });
+    }
+  }
   return out;
 }
 

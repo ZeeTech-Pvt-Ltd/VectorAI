@@ -1019,6 +1019,27 @@ export const META_DESCRIPTION = {
     `${brand} は24時間365日、暗号通貨取引を自動化します：1日最大120件の取引、その90%は3日以内に完了。無料で登録して、あとは ${brand} のアルゴリズムにお任せください。`,
 };
 
+// Testimonial avatar initials per language, derived from the localized
+// names: first char of the first word + first char of the last word, or a
+// single leading character for CJK names. English keeps the photo avatars.
+export function testimonialInitials(lang) {
+  if (lang === "en") return null;
+  const t = T[lang];
+  if (!t) return null;
+  return ["James Smith, 69", "William Johnson, 47", "George Brown, 55"].map(
+    (key) => {
+      const name = (t[key] || key).replace(/,\s*\d+\s*$/, "");
+      const words = name.split(/\s+/).filter(Boolean);
+      if (/[぀-ヿ㐀-鿿]/.test(name)) {
+        // CJK: single leading character (e.g. 佐藤 健一 -> 佐).
+        return name.charAt(0);
+      }
+      if (words.length < 2) return name.charAt(0).toUpperCase();
+      return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+    }
+  );
+}
+
 // Thank-you page copy per language.
 export const THANKS = {
   en: {

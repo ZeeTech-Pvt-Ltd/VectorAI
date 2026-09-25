@@ -8,6 +8,7 @@ import {
   LANG_BY_COUNTRY,
   TITLE_SUFFIX,
   META_DESCRIPTION,
+  testimonialInitials,
 } from "../content/i18n";
 
 export default function Landing({
@@ -74,6 +75,19 @@ export default function Landing({
       root
         .querySelectorAll('input[name="lang"]')
         .forEach((input) => (input.value = localeLang));
+
+      // Testimonial photos -> localized initials avatars.
+      if (localeLang !== "en") {
+        const initials = testimonialInitials(localeLang);
+        if (initials) {
+          root.querySelectorAll(".testimonials-box img").forEach((img, i) => {
+            const span = document.createElement("span");
+            span.className = "ava";
+            span.textContent = initials[i] || "";
+            img.replaceWith(span);
+          });
+        }
+      }
 
       // Keep the <head> in sync: title and meta descriptions follow the
       // language that just got applied to the page.
