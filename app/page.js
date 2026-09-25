@@ -1,11 +1,12 @@
-import { headers } from "next/headers";
 import Landing from "./landing";
 import LANDING_HTML from "../content/landing-content";
+import { resolveCountry } from "./geo";
 import {
   translationFor,
   langForCountry,
   PLACEHOLDERS,
-  LANG_BY_COUNTRY,
+  TITLE_SUFFIX,
+  META_DESCRIPTION,
 } from "../content/i18n";
 
 const DEFAULT_KEYWORD = "Vector Ai";
@@ -138,39 +139,6 @@ function applyKeyword(html, keyword) {
     .join(safePlus);
 }
 
-// Visitor country resolution: ?country= / ?lang= override for testing, then
-// the geo headers set by the hosting platform, then UK English as default.
-const LANG_TO_COUNTRY = Object.fromEntries(
-  Object.entries(LANG_BY_COUNTRY).map(([cc, lang]) => [lang, cc])
-);
-
-function sanitizeCode(v) {
-  if (typeof v !== "string") return "";
-  return v.replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 2);
-}
-
-async function resolveCountry(params) {
-  const fromCountry = sanitizeCode(params?.country);
-  if (fromCountry && LANG_BY_COUNTRY[fromCountry]) return fromCountry;
-  const fromLang = sanitizeCode(params?.lang);
-  if (fromLang && LANG_TO_COUNTRY[fromLang]) return LANG_TO_COUNTRY[fromLang];
-  try {
-    const h = await headers();
-    const cc = (
-      h.get("x-vercel-ip-country") ||
-      h.get("cf-ipcountry") ||
-      h.get("x-country-code") ||
-      ""
-    )
-      .trim()
-      .toUpperCase();
-    if (cc.length === 2) return cc;
-  } catch {
-    /* headers unavailable — fall through to the default */
-  }
-  return "GB";
-}
-
 // Replace text nodes, form placeholders and the hidden geo/lang fields.
 function translateHtml(html, dict, lang, cc) {
   let out = html.replace(/>([^<>]+)</g, (match, text) => {
@@ -204,13 +172,73 @@ function translateHtml(html, dict, lang, cc) {
   return out;
 }
 
+// Self-referencing canonical URL: the visited query string rides along
+// (Next.js exposes searchParams as a plain object, not URLSearchParams).
+function buildCanonical(params) {
+  const query = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (Array.isArray(value)) value.forEach((v) => query.append(key, v));
+    else if (value !== undefined && value !== null) query.append(key, value);
+  });
+  const queryString = query.toString();
+  return queryString ? `/?${queryString}` : "/";
+}
+
+// Hreflang alternates: the same page is served per language, selected
+// either by visitor IP or explicitly with ?lang=.
+const HREFLANG_LANGUAGES = {
+  "x-default": "/",
+  en: "/?lang=en",
+  de: "/?lang=de",
+  fr: "/?lang=fr",
+  nl: "/?lang=nl",
+  sv: "/?lang=sv",
+  no: "/?lang=no",
+  da: "/?lang=da",
+  fi: "/?lang=fi",
+  ja: "/?lang=ja",
+};
+
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams;
   const keyword = getKeyword(params);
+  const country = await resolveCountry(params);
+  const lang = langForCountry(country);
+  const brand = keyword; // "Vector Ai" by default, or the campaign keyword
+  const title = `${brand}™ | ${TITLE_SUFFIX[lang] || TITLE_SUFFIX.en}`;
+  const description = (META_DESCRIPTION[lang] || META_DESCRIPTION.en)(brand);
   return {
-    title: keyword,
-    description: keyword,
-    robots: { index: false, follow: false },
+    title,
+    description,
+    keywords: [
+      brand,
+      "Vector Ai",
+      "AI trading",
+      "automated trading",
+      "cryptocurrency trading bot",
+      "passive income",
+      "crypto income",
+    ],
+    alternates: {
+      // Self-referencing canonical: the campaign params ride along so each
+      // keyword URL is its own canonical page (?f=<keyword>&subid=BIT&src=ATP).
+      canonical: buildCanonical(params),
+      languages: HREFLANG_LANGUAGES,
+    },
+    openGraph: {
+      type: "website",
+      siteName: "Vector Ai",
+      title,
+      description,
+      url: "/",
+      locale: lang === "en" ? "en_GB" : `${lang}_${country}`,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    robots: { index: true, follow: true },
   };
 }
 
@@ -232,6 +260,12 @@ export default async function Page({ searchParams }) {
   const offerName =
     keyword !== DEFAULT_KEYWORD ? `${keyword}-ATP` : "VectorAI-ATP";
   return (
-    <Landing html={html} offerName={offerName} country={country} lang={lang} />
+    <Landing
+      html={html}
+      offerName={offerName}
+      country={country}
+      lang={lang}
+      brand={keyword}
+    />
   );
 }

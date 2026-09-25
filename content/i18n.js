@@ -983,3 +983,87 @@ export function translationFor(cc) {
   const currency = currencyCode && C[currencyCode] ? C[currencyCode][lang] || {} : {};
   return { ...(T[lang] || {}), ...currency };
 }
+
+// Browser-tab title suffix per language ("<Brand>™ | <suffix>").
+export const TITLE_SUFFIX = {
+  en: "Official Website – Automated Trading Platform",
+  de: "Offizielle Website – Automatisierte Handelsplattform",
+  fr: "Site Officiel – Plateforme de Trading Automatisé",
+  nl: "Officiële Website – Geautomatiseerd Handelsplatform",
+  sv: "Officiell webbplats – Automatiserad handelsplattform",
+  no: "Offisiell nettside – Automatisert handelsplattform",
+  da: "Officiel hjemmeside – Automatiseret handelsplatform",
+  fi: "Virallinen verkkosivusto – Automatisoitu kaupankäyntialusta",
+  ja: "公式サイト – 自動取引プラットフォーム",
+};
+
+// Meta description template per language ("<Brand> automates …").
+export const META_DESCRIPTION = {
+  en: (brand) =>
+    `${brand} automates cryptocurrency trading around the clock: up to 120 transactions a day, 90% completed within three days. Register free and let the ${brand} algorithm do the rest.`,
+  de: (brand) =>
+    `${brand} automatisiert den Kryptowährungshandel rund um die Uhr: bis zu 120 Transaktionen pro Tag, 90 % innerhalb von drei Tagen abgeschlossen. Registrieren Sie sich kostenlos und lassen Sie den ${brand}-Algorithmus den Rest erledigen.`,
+  fr: (brand) =>
+    `${brand} automatise le trading de cryptomonnaies 24h/24 : jusqu'à 120 transactions par jour, dont 90 % conclues en trois jours. Inscrivez-vous gratuitement et laissez l'algorithme ${brand} faire le reste.`,
+  nl: (brand) =>
+    `${brand} automatiseert de cryptohandel de klok rond: tot 120 transacties per dag, waarvan 90% binnen drie dagen wordt afgerond. Registreer gratis en laat het ${brand}-algoritme de rest doen.`,
+  sv: (brand) =>
+    `${brand} automatiserar kryptohandeln dygnet runt: upp till 120 transaktioner per dag, varav 90 % slutförs inom tre dagar. Registrera dig gratis och låt ${brand}-algoritmen göra resten.`,
+  no: (brand) =>
+    `${brand} automatiserer kryptohandel døgnet rundt: opptil 120 transaksjoner per dag, hvorav 90 % fullføres innen tre dager. Registrer deg gratis og la ${brand}-algoritmen gjøre resten.`,
+  da: (brand) =>
+    `${brand} automatiserer kryptohandel døgnet rundt: op til 120 transaktioner om dagen, hvoraf 90 % afsluttes inden for tre dage. Registrer dig gratis, og lad ${brand}-algoritmen klare resten.`,
+  fi: (brand) =>
+    `${brand} automatisoi kryptovaluuttakaupan ympäri vuorokauden: jopa 120 kauppaa päivässä, joista 90 % toteutuu kolmessa päivässä. Rekisteröidy ilmaiseksi ja anna ${brand}-algoritmin hoitaa loput.`,
+  ja: (brand) =>
+    `${brand} は24時間365日、暗号通貨取引を自動化します：1日最大120件の取引、その90%は3日以内に完了。無料で登録して、あとは ${brand} のアルゴリズムにお任せください。`,
+};
+
+// Thank-you page copy per language.
+export const THANKS = {
+  en: {
+    title: "Thank you!",
+    body: "Your account request has been received. Our manager will contact you shortly to complete your registration.",
+    back: "Back to home",
+  },
+  de: {
+    title: "Vielen Dank!",
+    body: "Ihre Anfrage ist eingegangen. Unser Manager wird sich in Kürze bei Ihnen melden, um Ihre Registrierung abzuschließen.",
+    back: "Zur Startseite",
+  },
+  fr: {
+    title: "Merci !",
+    body: "Votre demande de compte a bien été reçue. Notre gestionnaire vous contactera sous peu pour finaliser votre inscription.",
+    back: "Retour à l'accueil",
+  },
+  nl: {
+    title: "Bedankt!",
+    body: "Uw accountaanvraag is ontvangen. Onze manager neemt binnenkort contact met u op om uw registratie af te ronden.",
+    back: "Terug naar huis",
+  },
+  sv: {
+    title: "Tack!",
+    body: "Din kontoansökan har mottagits. Vår manager kontaktar dig inom kort för att slutföra din registrering.",
+    back: "Tillbaka till startsidan",
+  },
+  no: {
+    title: "Takk!",
+    body: "Forespørselen din er mottatt. Forvalteren vår kontakter deg snart for å fullføre registreringen.",
+    back: "Tilbake til startsiden",
+  },
+  da: {
+    title: "Tak!",
+    body: "Din kontoanmodning er modtaget. Vores rådgiver kontakter dig snart for at fuldføre din registrering.",
+    back: "Tilbage til forsiden",
+  },
+  fi: {
+    title: "Kiitos!",
+    body: "Tilipyyntösi on vastaanotettu. Managerimme ottaa sinuun pian yhteyttä rekisteröitymisen viimeistelemiseksi.",
+    back: "Takaisin etusivulle",
+  },
+  ja: {
+    title: "ありがとうございます！",
+    body: "アカウント申請を受け付けました。担当マネージャーが登録手続きの完了のため、まもなくご連絡いたします。",
+    back: "ホームに戻る",
+  },
+};

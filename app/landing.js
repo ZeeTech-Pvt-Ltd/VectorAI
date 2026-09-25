@@ -13,6 +13,7 @@ export default function Landing({
   offerName = "VectorAI-ATP",
   country = "GB",
   lang = "en",
+  brand = "Vector Ai",
 }) {
   const wrapRef = useRef(null);
 
@@ -21,6 +22,29 @@ export default function Landing({
     if (!root) return;
 
     document.documentElement.lang = lang;
+
+    // The rendered DOM already has the active brand baked in (e.g. Zephgain
+    // from ?f=), but the translation dictionaries are keyed with the original
+    // "Gully Bondstead". Rebuild the dict against the active brand so brand
+    // strings translate too.
+    const normalizeDictForBrand = (dict) => {
+      if (!brand || brand === "Gully Bondstead") return dict;
+      const plus = brand.replace(/ /g, "+");
+      const out = {};
+      for (const [key, value] of Object.entries(dict)) {
+        const newKey = key
+          .split("Gully Bondstead")
+          .join(brand)
+          .split("Gully+Bondstead")
+          .join(plus);
+        out[newKey] = value
+          .split("Gully Bondstead")
+          .join(brand)
+          .split("Gully+Bondstead")
+          .join(plus);
+      }
+      return out;
+    };
 
     // Translate the already-rendered DOM for a locale.
     const applyDomTranslation = (dict, cc, localeLang) => {
@@ -61,7 +85,11 @@ export default function Landing({
         const data = await res.json();
         const cc = String(data?.country_code || "").toUpperCase();
         if (cc.length === 2 && LANG_BY_COUNTRY[cc] && cc !== "GB") {
-          applyDomTranslation(translationFor(cc), cc, langForCountry(cc));
+          applyDomTranslation(
+            normalizeDictForBrand(translationFor(cc)),
+            cc,
+            langForCountry(cc)
+          );
           document.documentElement.lang = langForCountry(cc);
         }
       } catch {
