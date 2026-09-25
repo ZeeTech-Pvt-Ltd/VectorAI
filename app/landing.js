@@ -1,13 +1,73 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import {
+  translationFor,
+  langForCountry,
+  PLACEHOLDERS,
+  LANG_BY_COUNTRY,
+} from "../content/i18n";
 
-export default function Landing({ html, offerName = "GullyBondstead-ATP" }) {
+export default function Landing({
+  html,
+  offerName = "VectorAI-ATP",
+  country = "GB",
+  lang = "en",
+}) {
   const wrapRef = useRef(null);
 
   useEffect(() => {
     const root = wrapRef.current;
     if (!root) return;
+
+    document.documentElement.lang = lang;
+
+    // Translate the already-rendered DOM for a locale.
+    const applyDomTranslation = (dict, cc, localeLang) => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+      textNodes.forEach((node) => {
+        const full = node.textContent;
+        const trimmed = full.trim();
+        if (!trimmed) return;
+        const replacement = dict[trimmed];
+        if (!replacement || replacement === trimmed) return;
+        const start = full.indexOf(trimmed);
+        node.textContent =
+          full.slice(0, start) + replacement + full.slice(start + trimmed.length);
+      });
+      const ph = PLACEHOLDERS[localeLang] || PLACEHOLDERS.en;
+      root.querySelectorAll("input[placeholder]").forEach((input) => {
+        const loc = ph[input.getAttribute("placeholder")];
+        if (loc) input.setAttribute("placeholder", loc);
+      });
+      root
+        .querySelectorAll('input[name="geo"]')
+        .forEach((input) => (input.value = cc.toLowerCase()));
+      root
+        .querySelectorAll('input[name="lang"]')
+        .forEach((input) => (input.value = localeLang));
+    };
+
+    // --- Geo detection fallback (dev/localhost has no server geo headers).
+    // Resolved before the phone library initializes so the phone widget also
+    // defaults to the visitor's country.---
+    const geoReady = (async () => {
+      if (country !== "GB") return; // server already detected (or overridden)
+      if (/[?&](country|lang)=/.test(window.location.search)) return;
+      try {
+        const res = await fetch("https://ipwho.is/");
+        const data = await res.json();
+        const cc = String(data?.country_code || "").toUpperCase();
+        if (cc.length === 2 && LANG_BY_COUNTRY[cc] && cc !== "GB") {
+          applyDomTranslation(translationFor(cc), cc, langForCountry(cc));
+          document.documentElement.lang = langForCountry(cc);
+        }
+      } catch {
+        /* offline — keep the English default */
+      }
+    })();
 
     // --- FAQ accordion (ported from original script.js) ---
     // Only one answer stays open at a time: clicking a question closes the
@@ -72,6 +132,7 @@ export default function Landing({ html, offerName = "GullyBondstead-ATP" }) {
     (async () => {
       try {
         await loadScript(ITI_JS);
+        await geoReady;
       } catch {
         return; // CDN unreachable — leave the pre-rendered markup as is.
       }

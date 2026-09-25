@@ -1,7 +1,14 @@
+import { headers } from "next/headers";
 import Landing from "./landing";
 import LANDING_HTML from "../content/landing-content";
+import {
+  translationFor,
+  langForCountry,
+  PLACEHOLDERS,
+  LANG_BY_COUNTRY,
+} from "../content/i18n";
 
-const DEFAULT_KEYWORD = "Gully Bondstead";
+const DEFAULT_KEYWORD = "Vector Ai";
 
 function escapeHtml(value) {
   return value
@@ -120,7 +127,8 @@ function getKeyword(params) {
 }
 
 function applyKeyword(html, keyword) {
-  if (!keyword || keyword === DEFAULT_KEYWORD) return html;
+  // The HTML ships with "Gully Bondstead" baked in; the active brand always
+  // replaces it — "Vector Ai" by default, or the ?f= campaign keyword.
   const safe = escapeHtml(keyword);
   const safePlus = escapeHtml(keyword.replace(/ /g, "+"));
   return html
@@ -128,6 +136,72 @@ function applyKeyword(html, keyword) {
     .join(safe)
     .split("Gully+Bondstead")
     .join(safePlus);
+}
+
+// Visitor country resolution: ?country= / ?lang= override for testing, then
+// the geo headers set by the hosting platform, then UK English as default.
+const LANG_TO_COUNTRY = Object.fromEntries(
+  Object.entries(LANG_BY_COUNTRY).map(([cc, lang]) => [lang, cc])
+);
+
+function sanitizeCode(v) {
+  if (typeof v !== "string") return "";
+  return v.replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 2);
+}
+
+async function resolveCountry(params) {
+  const fromCountry = sanitizeCode(params?.country);
+  if (fromCountry && LANG_BY_COUNTRY[fromCountry]) return fromCountry;
+  const fromLang = sanitizeCode(params?.lang);
+  if (fromLang && LANG_TO_COUNTRY[fromLang]) return LANG_TO_COUNTRY[fromLang];
+  try {
+    const h = await headers();
+    const cc = (
+      h.get("x-vercel-ip-country") ||
+      h.get("cf-ipcountry") ||
+      h.get("x-country-code") ||
+      ""
+    )
+      .trim()
+      .toUpperCase();
+    if (cc.length === 2) return cc;
+  } catch {
+    /* headers unavailable — fall through to the default */
+  }
+  return "GB";
+}
+
+// Replace text nodes, form placeholders and the hidden geo/lang fields.
+function translateHtml(html, dict, lang, cc) {
+  let out = html.replace(/>([^<>]+)</g, (match, text) => {
+    const trimmed = text.trim();
+    if (!trimmed) return match;
+    const replacement = dict[trimmed];
+    if (!replacement || replacement === trimmed) return match;
+    const start = text.indexOf(trimmed);
+    return (
+      ">" +
+      text.slice(0, start) +
+      replacement +
+      text.slice(start + trimmed.length) +
+      "<"
+    );
+  });
+  const ph = PLACEHOLDERS[lang] || PLACEHOLDERS.en;
+  for (const [en, loc] of Object.entries(ph)) {
+    if (loc !== en) {
+      out = out
+        .split(`placeholder="${en}"`)
+        .join(`placeholder="${loc}"`);
+    }
+  }
+  out = out
+    .split('name="geo" value="gb"')
+    .join(`name="geo" value="${cc.toLowerCase()}"`);
+  out = out
+    .split('name="lang" value="en"')
+    .join(`name="lang" value="${lang}"`);
+  return out;
 }
 
 export async function generateMetadata({ searchParams }) {
@@ -143,9 +217,21 @@ export async function generateMetadata({ searchParams }) {
 export default async function Page({ searchParams }) {
   const params = await searchParams;
   const keyword = getKeyword(params);
-  const html = applyKeyword(LANDING_HTML, keyword);
+  const country = await resolveCountry(params);
+  const lang = langForCountry(country);
+  // Translate first so the keyword replacement also works inside the
+  // translated strings (the brand name stays replaceable in every language).
+  const translated = translateHtml(
+    LANDING_HTML,
+    translationFor(country),
+    lang,
+    country
+  );
+  const html = applyKeyword(translated, keyword);
   // Campaign leads are tagged "<Keyword>-ATP"; the default is the plain brand.
   const offerName =
-    keyword !== DEFAULT_KEYWORD ? `${keyword}-ATP` : "GullyBondstead-ATP";
-  return <Landing html={html} offerName={offerName} />;
+    keyword !== DEFAULT_KEYWORD ? `${keyword}-ATP` : "VectorAI-ATP";
+  return (
+    <Landing html={html} offerName={offerName} country={country} lang={lang} />
+  );
 }

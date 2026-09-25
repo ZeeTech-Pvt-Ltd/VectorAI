@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Gully Bondstead",
-  description: "Gully Bondstead",
+  title: "Vector Ai",
+  description: "Vector Ai",
   robots: { index: false, follow: false },
 };
 
