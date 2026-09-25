@@ -1019,25 +1019,55 @@ export const META_DESCRIPTION = {
     `${brand} は24時間365日、暗号通貨取引を自動化します：1日最大120件の取引、その90%は3日以内に完了。無料で登録して、あとは ${brand} のアルゴリズムにお任せください。`,
 };
 
-// Testimonial avatar initials per language, derived from the localized
-// names: first char of the first word + first char of the last word, or a
-// single leading character for CJK names. English keeps the photo avatars.
-export function testimonialInitials(lang) {
-  if (lang === "en") return null;
-  const t = T[lang];
-  if (!t) return null;
-  return ["James Smith, 69", "William Johnson, 47", "George Brown, 55"].map(
-    (key) => {
-      const name = (t[key] || key).replace(/,\s*\d+\s*$/, "");
-      const words = name.split(/\s+/).filter(Boolean);
-      if (/[぀-ヿ㐀-鿿]/.test(name)) {
-        // CJK: single leading character (e.g. 佐藤 健一 -> 佐).
-        return name.charAt(0);
-      }
-      if (words.length < 2) return name.charAt(0).toUpperCase();
-      return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
-    }
-  );
+// Testimonial portrait photos per non-English locale. Free-to-use AI
+// headshots from randomuser.me (no real-person rights or copyright issues);
+// swap any URL for a different face by changing the index. English-language
+// countries keep the original bundled photos.
+export const TESTIMONIAL_AVATARS = {
+  de: [
+    "https://randomuser.me/api/portraits/men/32.jpg",
+    "https://randomuser.me/api/portraits/men/45.jpg",
+    "https://randomuser.me/api/portraits/men/67.jpg",
+  ],
+  fr: [
+    "https://randomuser.me/api/portraits/men/75.jpg",
+    "https://randomuser.me/api/portraits/men/12.jpg",
+    "https://randomuser.me/api/portraits/men/88.jpg",
+  ],
+  nl: [
+    "https://randomuser.me/api/portraits/men/49.jpg",
+    "https://randomuser.me/api/portraits/men/21.jpg",
+    "https://randomuser.me/api/portraits/men/93.jpg",
+  ],
+  sv: [
+    "https://randomuser.me/api/portraits/men/58.jpg",
+    "https://randomuser.me/api/portraits/men/70.jpg",
+    "https://randomuser.me/api/portraits/men/36.jpg",
+  ],
+  no: [
+    "https://randomuser.me/api/portraits/men/64.jpg",
+    "https://randomuser.me/api/portraits/men/11.jpg",
+    "https://randomuser.me/api/portraits/men/77.jpg",
+  ],
+  da: [
+    "https://randomuser.me/api/portraits/men/85.jpg",
+    "https://randomuser.me/api/portraits/men/29.jpg",
+    "https://randomuser.me/api/portraits/men/53.jpg",
+  ],
+  fi: [
+    "https://randomuser.me/api/portraits/men/41.jpg",
+    "https://randomuser.me/api/portraits/men/60.jpg",
+    "https://randomuser.me/api/portraits/men/17.jpg",
+  ],
+  ja: [
+    "https://randomuser.me/api/portraits/men/2.jpg",
+    "https://randomuser.me/api/portraits/men/6.jpg",
+    "https://randomuser.me/api/portraits/men/9.jpg",
+  ],
+};
+
+export function testimonialAvatars(lang) {
+  return TESTIMONIAL_AVATARS[lang] || null;
 }
 
 // Thank-you page copy per language.

@@ -8,7 +8,7 @@ import {
   LANG_BY_COUNTRY,
   TITLE_SUFFIX,
   META_DESCRIPTION,
-  testimonialInitials,
+  testimonialAvatars,
 } from "../content/i18n";
 
 export default function Landing({
@@ -76,15 +76,15 @@ export default function Landing({
         .querySelectorAll('input[name="lang"]')
         .forEach((input) => (input.value = localeLang));
 
-      // Testimonial photos -> localized initials avatars.
+      // Testimonial photos -> localized portrait photos.
       if (localeLang !== "en") {
-        const initials = testimonialInitials(localeLang);
-        if (initials) {
+        const avatars = testimonialAvatars(localeLang);
+        if (avatars) {
           root.querySelectorAll(".testimonials-box img").forEach((img, i) => {
-            const span = document.createElement("span");
-            span.className = "ava";
-            span.textContent = initials[i] || "";
-            img.replaceWith(span);
+            if (avatars[i]) {
+              img.setAttribute("src", avatars[i]);
+              img.removeAttribute("srcset");
+            }
           });
         }
       }

@@ -2703,29 +2703,6 @@ body {
 /* ===== phone validation (original inline) ===== */
 .phone-validation-error { border: 1px solid red!important; box-shadow: 0px 0px 2px 2px rgba(195, 25, 25, .5)!important; }
 
-/* ===== testimonial initials avatars (non-English locales) ===== */
-.testimonials-box .ava {
-  -webkit-box-flex: 0;
-  -ms-flex: 0 0 80px;
-  flex: 0 0 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #0177fb;
-  color: #fff;
-  font-weight: 600;
-  font-size: 26px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
 /* ===== loader.js (original, injected at runtime) ===== */
 .loading-wrapper--7b335d4d {
     display: flex;

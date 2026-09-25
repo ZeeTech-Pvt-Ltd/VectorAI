@@ -7,7 +7,7 @@ import {
   PLACEHOLDERS,
   TITLE_SUFFIX,
   META_DESCRIPTION,
-  testimonialInitials,
+  testimonialAvatars,
 } from "../content/i18n";
 
 const DEFAULT_KEYWORD = "Vector Ai";
@@ -170,10 +170,10 @@ function translateHtml(html, dict, lang, cc) {
   out = out
     .split('name="lang" value="en"')
     .join(`name="lang" value="${lang}"`);
-  // Testimonial photos -> localized initials avatars on non-English pages.
+  // Testimonial photos -> localized portrait photos on non-English pages.
   if (lang !== "en") {
-    const initials = testimonialInitials(lang);
-    if (initials) {
+    const avatars = testimonialAvatars(lang);
+    if (avatars) {
       [
         '<img src="/assets/img/ava-1.webp" alt="" srcset="/assets/img/ava-1-2x.webp 2x">',
         '<img src="/assets/img/ava-2.webp" alt="" srcset="/assets/img/ava-2-2x.webp 2x">',
@@ -181,7 +181,7 @@ function translateHtml(html, dict, lang, cc) {
       ].forEach((imgTag, i) => {
         out = out
           .split(imgTag)
-          .join(`<span class="ava">${escapeHtml(initials[i])}</span>`);
+          .join(`<img src="${avatars[i]}" alt="">`);
       });
     }
   }
