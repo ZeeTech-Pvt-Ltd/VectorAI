@@ -2,6 +2,9 @@ import "./globals.css";
 
 export const metadata = {
   metadataBase: new URL("https://vectorai360.com"),
+  verification: {
+    google: "gakPoTPWVD8XwttV-nkchATdCNK6Phynwfwh4gJ7dyY",
+  },
   title: {
     default: "Vector Ai™ | Official Website – Automated Trading Platform",
     template: "%s",
@@ -65,6 +68,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        {/* Google Analytics (GA4) */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-XZWYKLN1M6"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "window.dataLayer = window.dataLayer || [];" +
+              "function gtag(){dataLayer.push(arguments);}" +
+              "gtag('js', new Date());" +
+              "gtag('config', 'G-XZWYKLN1M6');",
+          }}
+        />
         {/* Microsoft Clarity analytics */}
         <script
           type="text/javascript"
