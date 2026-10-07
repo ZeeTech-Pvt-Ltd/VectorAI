@@ -96,25 +96,43 @@ const CAMEL_REGEX = new RegExp(
   "gi"
 );
 
+// Split one token into known brand words (e.g. "VaultWealthholm" ->
+// ["Vault", "Wealthholm"]); unknown stretches become a single word.
+function camelWords(token) {
+  const words = [];
+  let last = 0;
+  const re = new RegExp(CAMEL_REGEX.source, "gi");
+  let match;
+  while ((match = re.exec(token)) !== null) {
+    if (match.index > last) {
+      const rest = token.slice(last, match.index);
+      words.push(rest.charAt(0).toUpperCase() + rest.slice(1));
+    }
+    const known = CAMEL_WORDS.find(
+      (w) => w.toLowerCase() === match[0].toLowerCase()
+    );
+    words.push(
+      known
+        ? known
+        : match[0].charAt(0).toUpperCase() + match[0].slice(1)
+    );
+    last = re.lastIndex;
+  }
+  if (last < token.length) {
+    const rest = token.slice(last);
+    words.push(rest.charAt(0).toUpperCase() + rest.slice(1));
+  }
+  return words;
+}
+
+// UpperCamelCase words joined with spaces for display: "VaultWealthholm" or
+// "vault-wealthholm" both become "Vault Wealthholm".
 function upperCamel(value) {
   return value
     .split(/[^A-Za-z0-9]+/)
     .filter(Boolean)
-    .map((word) => {
-      const cameled = word.replace(CAMEL_REGEX, (match) => {
-        const known = CAMEL_WORDS.find(
-          (w) => w.toLowerCase() === match.toLowerCase()
-        );
-        if (known) {
-          return known === known.toUpperCase()
-            ? known
-            : known.charAt(0).toUpperCase() + known.slice(1);
-        }
-        return match.charAt(0).toUpperCase() + match.slice(1);
-      });
-      return cameled.charAt(0).toUpperCase() + cameled.slice(1);
-    })
-    .join("");
+    .flatMap((token) => camelWords(token))
+    .join(" ");
 }
 
 function getKeyword(params) {
@@ -132,10 +150,15 @@ function applyKeyword(html, keyword) {
   // The HTML ships with "Gully Bondstead" baked in; the active brand always
   // replaces it — "Vector Ai" by default, or the ?f= campaign keyword.
   const safe = escapeHtml(keyword);
+  // Zero-width break opportunities at camelCase boundaries so long keywords
+  // wrap instead of overflowing into the hero image (visible text unchanged).
+  const breakable = safe
+    .replace(/([a-z0-9])([A-Z])/g, "$1​$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1​$2");
   const safePlus = escapeHtml(keyword.replace(/ /g, "+"));
   return html
     .split("Gully Bondstead")
-    .join(safe)
+    .join(breakable)
     .split("Gully+Bondstead")
     .join(safePlus);
 }
@@ -272,9 +295,12 @@ export default async function Page({ searchParams }) {
     country
   );
   const html = applyKeyword(translated, keyword);
-  // Campaign leads are tagged "<Keyword>-ATP"; the default is the plain brand.
+  // Campaign leads are tagged "<Keyword>-ATP" (spaces stripped from the
+  // display keyword); the default is the plain brand.
   const offerName =
-    keyword !== DEFAULT_KEYWORD ? `${keyword}-ATP` : "VectorAI-ATP";
+    keyword !== DEFAULT_KEYWORD
+      ? `${keyword.replace(/ /g, "")}-ATP`
+      : "VectorAI-ATP";
   return (
     <Landing
       html={html}

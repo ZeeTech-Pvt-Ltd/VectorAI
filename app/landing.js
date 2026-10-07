@@ -32,17 +32,22 @@ export default function Landing({
     // strings translate too.
     const normalizeDictForBrand = (dict) => {
       if (!brand || brand === "Gully Bondstead") return dict;
+      // Match the server-side rendering: the brand in the DOM carries
+      // zero-width break opportunities at camelCase boundaries.
+      const breakableBrand = brand
+        .replace(/([a-z0-9])([A-Z])/g, "$1​$2")
+        .replace(/([A-Z])([A-Z][a-z])/g, "$1​$2");
       const plus = brand.replace(/ /g, "+");
       const out = {};
       for (const [key, value] of Object.entries(dict)) {
         const newKey = key
           .split("Gully Bondstead")
-          .join(brand)
+          .join(breakableBrand)
           .split("Gully+Bondstead")
           .join(plus);
         out[newKey] = value
           .split("Gully Bondstead")
-          .join(brand)
+          .join(breakableBrand)
           .split("Gully+Bondstead")
           .join(plus);
       }
