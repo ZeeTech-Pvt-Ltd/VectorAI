@@ -2710,6 +2710,104 @@ body {
 /* ===== long campaign keywords wrap instead of overflowing ===== */
 .hero-body h1, .hero-body p, .title, .form-block-title { overflow-wrap: break-word; }
 
+/* ===== trade panel calculator (trade-panel-4-ice demo, scoped) ===== */
+#trade-panel-wrap {
+  --bg:#000; --line:#262626; --field:#0b0b0b; --ink:#f2f2f2; --muted:#8a8a8a;
+  --up:#22c55e; --down:#ef4444; --demo:#f59e0b; --blue:#38bdf8; --violet:#e2e8f0; --cyan:#7dd3fc;
+  box-sizing: border-box;
+  width: 340px;
+  max-width: 100%;
+  margin: 0 0 24px;
+}
+#trade-panel-wrap *, #trade-panel-wrap *::before, #trade-panel-wrap *::after { box-sizing: inherit }
+#trade-panel-wrap .trade { width: 100%; max-width: 100%; background: #000; border: 1px solid var(--line); box-shadow: 0 0 0 1px #000, 0 0 40px -12px color-mix(in srgb, var(--blue) 45%, transparent); border-radius: 12px; padding: .8rem .9rem; font-size: .8rem; position: relative; overflow: hidden; font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+
+/* calculator placement: top-aligned beside the text on desktop, centered
+   and compact below it on stacked layouts */
+@media (max-width: 1200px) {
+  #trade-panel-wrap { width: 320px; margin: 0 auto 24px; }
+}
+@media (max-width: 480px) {
+  #trade-panel-wrap { width: 300px; }
+}
+#trade-panel-wrap .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: .55rem }
+#trade-panel-wrap .head h1 { font-size: .92rem; margin: 0; font-weight: 700; color: var(--ink) }
+#trade-panel-wrap .head .r { display: flex; gap: .35rem; align-items: center }
+#trade-panel-wrap .badge { background: var(--demo); color: #1a1200; font-size: .64rem; font-weight: 700; padding: .1rem .45rem; border-radius: 999px }
+#trade-panel-wrap .icon-btn { width: auto; margin: 0; padding: .1rem .45rem; font-size: .66rem; border-radius: 999px }
+#trade-panel-wrap .stats { margin-top: .55rem; margin-bottom: .1rem; display: grid; grid-template-columns: 1fr 1fr; gap: .35rem }
+#trade-panel-wrap .stat { border: 1px solid var(--line); border-top: 2px solid var(--c, var(--line)); border-radius: 8px; padding: .3rem .5rem; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 10%, transparent), transparent 70%) }
+#trade-panel-wrap .stat:nth-child(1) { --c: #38bdf8 }
+#trade-panel-wrap .stat:nth-child(2) { --c: #22c55e }
+#trade-panel-wrap .stat:nth-child(3) { --c: #94a3b8 }
+#trade-panel-wrap .stat:nth-child(4) { --c: #e2e8f0 }
+#trade-panel-wrap .stat span { display: block; font-size: .62rem; color: var(--muted) }
+#trade-panel-wrap .stat b { font-size: .88rem; font-variant-numeric: tabular-nums }
+#trade-panel-wrap .up { color: var(--up) }
+#trade-panel-wrap .down { color: var(--down) }
+#trade-panel-wrap .sec { font-size: .66rem; color: var(--muted); margin: .55rem 0 .2rem; display: flex; justify-content: space-between; align-items: center }
+#trade-panel-wrap select, #trade-panel-wrap input[type=number] { font: inherit; width: 100%; padding: .35rem .5rem; border-radius: 7px; border: 1px solid var(--line); background: var(--field); color: var(--ink) }
+#trade-panel-wrap .row { display: flex; justify-content: space-between; align-items: baseline; margin: .45rem 0 .15rem }
+#trade-panel-wrap .price { font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums; padding: 0 .2rem; border-radius: 4px; transition: background .5s }
+#trade-panel-wrap .price.fu { background: rgba(34,197,94,.28); transition: none }
+#trade-panel-wrap .price.fd { background: rgba(239,68,68,.28); transition: none }
+#trade-panel-wrap .chg { font-size: .72rem; font-weight: 700; font-variant-numeric: tabular-nums }
+#trade-panel-wrap label { display: flex; justify-content: space-between; font-size: .68rem; color: var(--muted); margin: .4rem 0 .15rem; font-family: inherit }
+#trade-panel-wrap label output { color: var(--cyan); font-weight: 700 }
+#trade-panel-wrap input[type=range] { width: 100%; accent-color: var(--blue); margin: 0 }
+#trade-panel-wrap .ticks { display: flex; justify-content: space-between; font-size: .58rem; color: var(--muted) }
+#trade-panel-wrap button { font: inherit; font-weight: 700; width: 100%; margin-top: .45rem; padding: .5rem; border-radius: 8px; cursor: pointer; background: #000; color: #fff; border: 1px solid #fff }
+#trade-panel-wrap button:hover { background: #fff; color: #000 }
+#trade-panel-wrap button:disabled { opacity: .4; cursor: not-allowed; background: #000; color: #fff }
+#trade-panel-wrap button:focus-visible, #trade-panel-wrap select:focus-visible, #trade-panel-wrap input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px }
+#trade-panel-wrap .btns { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem }
+#trade-panel-wrap #go { background: var(--blue); border-color: var(--blue); color: #00131f }
+#trade-panel-wrap #go:hover { background: #0ea5e9; color: #00131f }
+#trade-panel-wrap #ai { border-color: var(--violet); color: #fff; white-space: nowrap }
+#trade-panel-wrap #ai:hover { background: color-mix(in srgb, var(--violet) 20%, #000); color: #fff }
+#trade-panel-wrap #ai.on { background: var(--violet); color: #000 }
+#trade-panel-wrap .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin-right: .35rem; vertical-align: middle }
+#trade-panel-wrap #ai.on .dot { background: #00131f; animation: pulse 1.2s infinite }
+@keyframes pulse { 50% { opacity: .3 } }
+#trade-panel-wrap #aiTxt { display: inline-block; max-width: calc(100% - 14px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle }
+#trade-panel-wrap .chips { display: flex; gap: .25rem; flex-wrap: wrap; margin-top: .25rem }
+#trade-panel-wrap .chips button { width: auto; margin: 0; padding: .15rem .5rem; font-size: .66rem; border-color: var(--line); color: var(--muted); font-weight: 600 }
+#trade-panel-wrap .chips button[aria-pressed=true] { background: var(--blue); border-color: var(--blue); color: #fff }
+#trade-panel-wrap #dip { color: #fff; margin-top: .4rem }
+#trade-panel-wrap #dip:hover { background: #fff; color: #000 }
+#trade-panel-wrap #dip.on { background: var(--cyan); border-color: var(--cyan); color: #00131f }
+#trade-panel-wrap #dip.on .dot { background: #00131f; animation: pulse 1.2s infinite }
+#trade-panel-wrap .dtag { border-color: var(--cyan); color: var(--cyan) }
+#trade-panel-wrap .sub { font-size: .62rem; color: var(--muted); margin-left: .3rem; font-variant-numeric: tabular-nums }
+#trade-panel-wrap .list { display: flex; flex-direction: column; gap: .3rem }
+#trade-panel-wrap .empty { font-size: .66rem; color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; padding: .4rem; text-align: center }
+#trade-panel-wrap .pos { border: 1px solid var(--line); border-radius: 8px; padding: .35rem .45rem }
+#trade-panel-wrap .pos .line { display: flex; justify-content: space-between; align-items: center; gap: .3rem; font-variant-numeric: tabular-nums }
+#trade-panel-wrap .pos .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+#trade-panel-wrap .tag { font-size: .56rem; border: 1px solid var(--violet); border-radius: 4px; padding: 0 .25rem; margin-left: .25rem; color: #d8b4fe }
+#trade-panel-wrap .x { width: auto; margin: 0; padding: 0 .35rem; font-size: .7rem; border-color: var(--line); line-height: 1.3 }
+#trade-panel-wrap .bar { height: 3px; background: #1a1a1a; border-radius: 2px; margin-top: .3rem; overflow: hidden; position: relative }
+#trade-panel-wrap .bar i { position: absolute; top: 0; bottom: 0; left: 50%; width: 0 }
+#trade-panel-wrap .hist { font-size: .7rem }
+#trade-panel-wrap .hist div { display: flex; justify-content: space-between; padding: .2rem 0; border-bottom: 1px solid #141414; font-variant-numeric: tabular-nums }
+#trade-panel-wrap .hist time { color: var(--muted); font-size: .62rem; margin-right: .4rem }
+#trade-panel-wrap .fine { font-size: .58rem; color: var(--muted); margin: .5rem 0 0 }
+#trade-panel-wrap .ticker { margin: .4rem -.9rem .55rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; font-size: .62rem; height: 20px; line-height: 20px; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent) }
+#trade-panel-wrap .ticker .track { display: inline-block; animation: scroll 40s linear infinite; font-variant-numeric: tabular-nums }
+#trade-panel-wrap .ticker span { margin-right: 1.1rem }
+@keyframes scroll { to { transform: translateX(-50%) } }
+#trade-panel-wrap .trade.win { animation: win .9s ease }
+#trade-panel-wrap .trade.lose { animation: lose .45s ease }
+@keyframes win { 0% { box-shadow: 0 0 0 1px var(--up), 0 0 30px -4px var(--up) } 100% { box-shadow: 0 0 0 1px #000, 0 0 40px -12px color-mix(in srgb, var(--blue) 45%, transparent) } }
+@keyframes lose { 0%, 100% { transform: none } 20% { transform: translateX(-3px); box-shadow: 0 0 0 1px var(--down) } 40% { transform: translateX(3px) } 60% { transform: translateX(-2px) } 80% { transform: translateX(2px) } }
+#trade-panel-wrap .pop { position: absolute; left: 50%; top: 40%; transform: translate(-50%, 0); font-weight: 700; font-size: 1.3rem; pointer-events: none; animation: pop 1.2s ease-out forwards; text-shadow: 0 0 18px currentColor }
+@keyframes pop { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.8) } 20% { opacity: 1; transform: translate(-50%, 0) scale(1.1) } 100% { opacity: 0; transform: translate(-50%, -40px) scale(1) } }
+#trade-panel-wrap .toasts { position: fixed; right: 1rem; bottom: 1rem; display: flex; flex-direction: column; gap: .4rem; z-index: 10; pointer-events: none }
+#trade-panel-wrap .toast { background: #000; border: 1px solid var(--line); border-left: 3px solid var(--blue); border-radius: 8px; padding: .45rem .7rem; font-size: .72rem; min-width: 180px; max-width: 260px; transform: translateX(120%); transition: transform .25s ease, opacity .25s; opacity: 0; color: var(--ink) }
+#trade-panel-wrap .toast.in { transform: none; opacity: 1 }
+#trade-panel-wrap .toast.good { border-left-color: var(--up) }
+#trade-panel-wrap .toast.bad { border-left-color: var(--down) }
+
 /* ===== loader.js (original, injected at runtime) ===== */
 .loading-wrapper--7b335d4d {
     display: flex;
