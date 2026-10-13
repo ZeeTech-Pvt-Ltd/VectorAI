@@ -1042,6 +1042,46 @@ export function testimonialAvatars(lang) {
   return TESTIMONIAL_AVATARS[lang] || null;
 }
 
+// Fixed bottom CTA bar copy per language.
+export const FIXED_CTA = {
+  en: {
+    title: "Register now",
+    text: "Enter your name, email and phone number to complete your free registration.",
+  },
+  de: {
+    title: "Jetzt registrieren",
+    text: "Geben Sie Ihren Namen, Ihre E-Mail-Adresse und Ihre Telefonnummer ein, um Ihre kostenlose Registrierung abzuschließen.",
+  },
+  fr: {
+    title: "Inscrivez-vous maintenant",
+    text: "Saisissez votre nom, votre e-mail et votre numéro de téléphone pour finaliser votre inscription gratuite.",
+  },
+  nl: {
+    title: "Registreer nu",
+    text: "Vul uw naam, e-mailadres en telefoonnummer in om uw gratis registratie af te ronden.",
+  },
+  sv: {
+    title: "Registrera dig nu",
+    text: "Ange ditt namn, din e-post och ditt telefonnummer för att slutföra din kostnadsfria registrering.",
+  },
+  no: {
+    title: "Registrer deg nå",
+    text: "Oppgi navn, e-post og telefonnummer for å fullføre den gratis registreringen.",
+  },
+  da: {
+    title: "Registrer dig nu",
+    text: "Indtast dit navn, din e-mail og dit telefonnummer for at fuldføre din gratis registrering.",
+  },
+  fi: {
+    title: "Rekisteröidy nyt",
+    text: "Anna nimesi, sähköpostisi ja puhelinnumerosi ja viimeistele ilmainen rekisteröityminen.",
+  },
+  ja: {
+    title: "今すぐ登録",
+    text: "お名前、メールアドレス、電話番号を入力して、無料登録を完了してください。",
+  },
+};
+
 // Thank-you page copy per language.
 export const THANKS = {
   en: {

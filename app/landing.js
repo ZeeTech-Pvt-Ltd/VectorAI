@@ -9,6 +9,7 @@ import {
   TITLE_SUFFIX,
   META_DESCRIPTION,
   testimonialAvatars,
+  FIXED_CTA,
 } from "../content/i18n";
 
 export default function Landing({
@@ -92,6 +93,18 @@ export default function Landing({
             }
           });
         }
+      }
+
+      // Translate the fixed bottom CTA bar as well.
+      const cta = document.getElementById("fixed-cta");
+      if (cta) {
+        const ct = FIXED_CTA[localeLang] || FIXED_CTA.en;
+        const b = cta.querySelector("b");
+        const s = cta.querySelector("span");
+        const btn = cta.querySelector("button");
+        if (b) b.textContent = ct.title;
+        if (s) s.textContent = ct.text;
+        if (btn) btn.textContent = ct.title;
       }
 
       // Keep the <head> in sync: title and meta descriptions follow the
@@ -534,6 +547,50 @@ export default function Landing({
     };
     stopTradePanel = startTradePanel();
 
+    // --- Fixed bottom CTA bar, revealed at the end of the page ---
+    let ctaBar = document.getElementById("fixed-cta");
+    if (!ctaBar) {
+      ctaBar = document.createElement("div");
+      ctaBar.id = "fixed-cta";
+      ctaBar.className = "fixed-cta";
+      document.body.appendChild(ctaBar);
+    }
+    const ctaCopy = FIXED_CTA[lang] || FIXED_CTA.en;
+    ctaBar.innerHTML =
+      '<div class="fixed-cta__img" aria-hidden="true">' +
+      '<svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<line x1="11" y1="10" x2="11" y2="32" stroke="#0177fb" stroke-width="2"/>' +
+      '<rect x="8" y="15" width="6" height="12" rx="1" fill="#0177fb"/>' +
+      '<line x1="23" y1="14" x2="23" y2="36" stroke="#0177fb" stroke-width="2"/>' +
+      '<rect x="20" y="20" width="6" height="12" rx="1" fill="#0177fb"/>' +
+      '<line x1="35" y1="8" x2="35" y2="30" stroke="#22c55e" stroke-width="2"/>' +
+      '<rect x="32" y="12" width="6" height="14" rx="1" fill="#22c55e"/>' +
+      '<path d="M5 36 L16 28 L25 31 L34 16 L43 10" stroke="#1b1b1b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+      "</svg></div>" +
+      '<div class="fixed-cta__text"><b>' +
+      ctaCopy.title +
+      "</b><span>" +
+      ctaCopy.text +
+      '</span></div><button type="button" class="fixed-cta__btn">' +
+      ctaCopy.title +
+      "</button>";
+    const ctaBtn = ctaBar.querySelector("button");
+    const onCtaClick = () => {
+      const firstForm = root.querySelector("form");
+      if (firstForm) {
+        firstForm.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    };
+    ctaBtn.addEventListener("click", onCtaClick);
+    // Sticky: always pinned to the bottom of the viewport while scrolling.
+    // The page gets bottom padding so the bar never covers content.
+    const onCtaResize = () => {
+      ctaBar.classList.add("show");
+      document.body.style.paddingBottom = ctaBar.offsetHeight + "px";
+    };
+    window.addEventListener("resize", onCtaResize);
+    onCtaResize();
+
     // --- Form submit: JSON POST to the campaign endpoint. ---
     // Same integration as the previous projects (Binnacrest AI, Gewinode Raven,
     // Austerio Smart, ...): {offerName, firstName, lastName, email, phone} as
@@ -635,6 +692,12 @@ export default function Landing({
       handlers.forEach((handler, form) => form.removeEventListener("submit", handler));
       itiInstances.forEach((iti) => iti.destroy());
       if (stopTradePanel) stopTradePanel();
+      if (ctaBar) {
+        ctaBtn.removeEventListener("click", onCtaClick);
+        window.removeEventListener("resize", onCtaResize);
+        document.body.style.paddingBottom = "";
+        ctaBar.remove();
+      }
     };
   }, []);
 
