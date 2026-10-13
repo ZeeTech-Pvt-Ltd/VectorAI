@@ -557,16 +557,7 @@ export default function Landing({
     }
     const ctaCopy = FIXED_CTA[lang] || FIXED_CTA.en;
     ctaBar.innerHTML =
-      '<div class="fixed-cta__img" aria-hidden="true">' +
-      '<svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-      '<line x1="11" y1="10" x2="11" y2="32" stroke="#0177fb" stroke-width="2"/>' +
-      '<rect x="8" y="15" width="6" height="12" rx="1" fill="#0177fb"/>' +
-      '<line x1="23" y1="14" x2="23" y2="36" stroke="#0177fb" stroke-width="2"/>' +
-      '<rect x="20" y="20" width="6" height="12" rx="1" fill="#0177fb"/>' +
-      '<line x1="35" y1="8" x2="35" y2="30" stroke="#22c55e" stroke-width="2"/>' +
-      '<rect x="32" y="12" width="6" height="14" rx="1" fill="#22c55e"/>' +
-      '<path d="M5 36 L16 28 L25 31 L34 16 L43 10" stroke="#1b1b1b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-      "</svg></div>" +
+      '<div class="fixed-cta__img" aria-hidden="true"></div>' +
       '<div class="fixed-cta__text"><b>' +
       ctaCopy.title +
       "</b><span>" +
@@ -574,6 +565,12 @@ export default function Landing({
       '</span></div><button type="button" class="fixed-cta__btn">' +
       ctaCopy.title +
       "</button>";
+    ctaBar
+      .querySelector(".fixed-cta__img")
+      .insertAdjacentHTML(
+        "beforeend",
+        '<img src="https://images.unsplash.com/photo-1589560989620-61bf48e97abb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="">'
+      );
     const ctaBtn = ctaBar.querySelector("button");
     const onCtaClick = () => {
       const firstForm = root.querySelector("form");

@@ -2821,7 +2821,7 @@ body {
   gap: 24px;
   background: #fff;
   border-top: 1px solid #e8e8e8;
-  padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0px));
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom, 0px));
   box-shadow: 0 -8px 30px rgba(0, 0, 0, .12);
   transform: translateY(110%);
   transition: transform .35s ease;
@@ -2829,36 +2829,56 @@ body {
 .fixed-cta.show { transform: translateY(0); }
 .fixed-cta__img {
   flex: 0 0 auto;
-  width: 46px;
-  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e8f1ff;
-  border-radius: 12px;
+}
+.fixed-cta__img iframe {
+  display: block;
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 150px;
+  height: 84px;
+}
+.fixed-cta__img img {
+  display: block;
+  width: 180px;
+  height: 104px;
+  object-fit: cover;
+  border-radius: 10px;
 }
 .fixed-cta__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.fixed-cta__text b { font-family: Manrope, sans-serif; font-size: 16px; color: #1b1b1b; }
-.fixed-cta__text span { font-size: 13px; color: #4d4d4d; }
+.fixed-cta__text b { font-family: Manrope, sans-serif; font-size: 18px; color: #1b1b1b; }
+.fixed-cta__text span { font-size: 14px; color: #4d4d4d; }
 .fixed-cta__btn {
   flex: 0 0 auto;
   background: #0177fb;
   color: #fff;
   font-family: inherit;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
   text-transform: uppercase;
   border: none;
   border-radius: 50px;
-  padding: 14px 32px;
+  padding: 16px 36px;
   cursor: pointer;
 }
 .fixed-cta__btn:hover { background: #0165d0; }
 @media (max-width: 600px) {
-  .fixed-cta { gap: 12px; justify-content: space-between; }
-  .fixed-cta__text b { font-size: 14px; }
-  .fixed-cta__text span { font-size: 12px; line-height: 1.35; }
-  .fixed-cta__btn { padding: 12px 20px; font-size: 14px; }
+  .fixed-cta { gap: 12px; justify-content: space-between; padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .fixed-cta__text b { font-size: 15px; }
+  .fixed-cta__text span {
+    font-size: 13px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .fixed-cta__btn { padding: 12px 22px; font-size: 15px; }
+  .fixed-cta__img iframe { width: 104px !important; height: 58px !important; }
+  .fixed-cta__img img { width: 120px; height: 68px; }
 }
 
 /* ===== loader.js (original, injected at runtime) ===== */
