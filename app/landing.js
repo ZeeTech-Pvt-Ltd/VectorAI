@@ -99,10 +99,8 @@ export default function Landing({
       const cta = document.getElementById("fixed-cta");
       if (cta) {
         const ct = FIXED_CTA[localeLang] || FIXED_CTA.en;
-        const b = cta.querySelector("b");
         const s = cta.querySelector("span");
         const btn = cta.querySelector("button");
-        if (b) b.textContent = ct.title;
         if (s) s.textContent = ct.text;
         if (btn) btn.textContent = ct.button || ct.title;
       }
@@ -557,20 +555,14 @@ export default function Landing({
     }
     const ctaCopy = FIXED_CTA[lang] || FIXED_CTA.en;
     ctaBar.innerHTML =
-      '<div class="fixed-cta__img" aria-hidden="true"></div>' +
-      '<div class="fixed-cta__text"><b>' +
-      ctaCopy.title +
-      "</b><span>" +
-      ctaCopy.text +
-      '</span></div><button type="button" class="fixed-cta__btn">' +
+      '<div class="fixed-cta__img" aria-hidden="true">' +
+      '<img src="/assets/img/cta-dashboard.png" alt="">' +
+      '</div><div class="fixed-cta__right">' +
+      '<button type="button" class="fixed-cta__btn">' +
       (ctaCopy.button || ctaCopy.title) +
-      "</button>";
-    ctaBar
-      .querySelector(".fixed-cta__img")
-      .insertAdjacentHTML(
-        "beforeend",
-        '<img src="/assets/img/cta-dashboard.png" alt="">'
-      );
+      '</button><div class="fixed-cta__text"><span>' +
+      ctaCopy.text +
+      "</span></div></div>";
     const ctaBtn = ctaBar.querySelector("button");
     const onCtaClick = () => {
       const firstForm = root.querySelector("form");
