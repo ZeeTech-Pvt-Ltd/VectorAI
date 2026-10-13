@@ -2843,9 +2843,8 @@ body {
 }
 .fixed-cta__img img {
   display: block;
-  width: 180px;
-  height: 104px;
-  object-fit: cover;
+  width: auto;
+  height: 118px;
   border-radius: 10px;
 }
 .fixed-cta__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -2863,10 +2862,12 @@ body {
   border-radius: 50px;
   padding: 16px 36px;
   cursor: pointer;
+  white-space: nowrap;
 }
 .fixed-cta__btn:hover { background: #0165d0; }
 @media (max-width: 600px) {
-  .fixed-cta { gap: 12px; justify-content: space-between; padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .fixed-cta { flex-wrap: wrap; gap: 10px 12px; justify-content: space-between; padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .fixed-cta__text { flex: 1 1 auto; }
   .fixed-cta__text b { font-size: 15px; }
   .fixed-cta__text span {
     font-size: 13px;
@@ -2876,9 +2877,11 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .fixed-cta__btn { padding: 12px 22px; font-size: 15px; }
-  .fixed-cta__img iframe { width: 104px !important; height: 58px !important; }
-  .fixed-cta__img img { width: 120px; height: 68px; }
+  .fixed-cta__img img { width: auto; height: 76px; }
+  .fixed-cta__btn { width: 100%; margin-top: 2px; padding: 13px; font-size: 15px; }
+}
+@media (max-width: 360px) {
+  .fixed-cta__img img { width: auto; height: 62px; }
 }
 
 /* ===== loader.js (original, injected at runtime) ===== */

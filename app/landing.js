@@ -104,7 +104,7 @@ export default function Landing({
         const btn = cta.querySelector("button");
         if (b) b.textContent = ct.title;
         if (s) s.textContent = ct.text;
-        if (btn) btn.textContent = ct.title;
+        if (btn) btn.textContent = ct.button || ct.title;
       }
 
       // Keep the <head> in sync: title and meta descriptions follow the
@@ -563,13 +563,13 @@ export default function Landing({
       "</b><span>" +
       ctaCopy.text +
       '</span></div><button type="button" class="fixed-cta__btn">' +
-      ctaCopy.title +
+      (ctaCopy.button || ctaCopy.title) +
       "</button>";
     ctaBar
       .querySelector(".fixed-cta__img")
       .insertAdjacentHTML(
         "beforeend",
-        '<img src="https://images.unsplash.com/photo-1589560989620-61bf48e97abb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="">'
+        '<img src="/assets/img/cta-dashboard.png" alt="">'
       );
     const ctaBtn = ctaBar.querySelector("button");
     const onCtaClick = () => {
