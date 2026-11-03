@@ -297,10 +297,13 @@ export default async function Page({ searchParams }) {
   const html = applyKeyword(translated, keyword);
   // Campaign leads are tagged "<Keyword>-ATP" (spaces stripped from the
   // display keyword); the default is the plain brand.
+  // Campaign leads are tagged "<Keyword>-<src>": traderai.ai CTAs pass
+  // src=TAI, the AI Trading Platform CTAs pass src=ATP (the default).
+  const srcTag = String(params?.src || "").toUpperCase() === "TAI" ? "TAI" : "ATP";
   const offerName =
     keyword !== DEFAULT_KEYWORD
-      ? `${keyword.replace(/ /g, "")}-ATP`
-      : "VectorAI-ATP";
+      ? `${keyword.replace(/ /g, "")}-${srcTag}`
+      : `VectorAI-${srcTag}`;
   return (
     <Landing
       html={html}
