@@ -653,13 +653,18 @@ export default function Landing({
               phone,
             }),
           });
-          if (!res.ok) {
-            // The endpoint rate-limits 3 attempts per 5 minutes per IP.
-            const msg = await res.text().catch(() => "");
+          // The backend answers 200 with JSON {status: "error", message}
+          // for rejected registrations (invalid phone, geo/rate blocks) -
+          // treat those as failures, otherwise visitors land on the
+          // thank-you page without a lead being created.
+          const data = await res.json().catch(() => null);
+          if (!res.ok || data?.status === "error") {
+            const msg = data?.message || (await res.text().catch(() => ""));
             throw new Error(
-              res.status === 429 || /limit|many|attempt/i.test(msg)
+              res.status === 429 || /limit|many|attempt|reached/i.test(msg)
                 ? "Too many attempts - please wait a few minutes and try again."
-                : "Something went wrong on our side. Please try again in a moment."
+                : msg ||
+                    "Something went wrong on our side. Please try again in a moment."
             );
           }
           window.location.href = "/thank-you";
