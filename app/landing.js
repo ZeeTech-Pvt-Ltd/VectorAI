@@ -584,7 +584,7 @@ export default function Landing({
     // Same integration as the previous projects (Binnacrest AI, Gewinode Raven,
     // Austerio Smart, ...): {offerName, firstName, lastName, email, phone} as
     // JSON, 429-aware errors, navigate to /thank-you on success.
-    const ENDPOINT = "https://theunion-ai.com/dorovio-au.php";
+    const ENDPOINT = "https://theunion-ai.com/wffmdorovio.php";
     const forms = root.querySelectorAll("form");
     const handlers = new Map();
 
